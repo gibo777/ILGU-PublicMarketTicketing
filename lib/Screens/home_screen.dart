@@ -1,0 +1,463 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutterapp/Screens/download_data.dart';
+import 'package:flutterapp/Screens/login_screen.dart';
+import 'package:intl/intl.dart';
+import 'package:flutterapp/Screens/upload_data.dart';
+import 'package:flutterapp/Screens/setup_screen.dart';
+import 'package:flutterapp/Screens/settings_screen.dart';
+import 'package:flutterapp/Screens/profile_screen.dart';
+
+class HomeScreen extends StatelessWidget {
+  final _dateController = TextEditingController();
+  final _qtyController = TextEditingController();
+  final _unitPriceController = TextEditingController();
+  final _totalController = TextEditingController();
+
+  void _computeTotal() {
+    final qty = int.tryParse(_qtyController.text) ?? 0;
+    final unitPrice = double.tryParse(_unitPriceController.text) ?? 0.0;
+    final total = qty * unitPrice;
+    _totalController.text = total.toStringAsFixed(2);
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(
+          color: Colors.black,
+          size: 40,
+
+          /// set the color of the AppBar buttons
+        ),
+        title: Center(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 50, 0),
+            child: Center(
+              child: Image.asset(
+                'assets/images/logo.png', // replace this with the path to your image
+                height: 60, // set the height of the image
+              ),
+            ),
+          ),
+        ),
+        elevation: 0,
+        toolbarHeight: 80,
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => HomeScreen()),
+              );
+            },
+            icon: Icon(Icons.add),
+            color: Colors.black,
+            iconSize: 40, // set the size of the icon
+          ),
+        ],
+      ),
+      drawer: SafeArea(
+        child: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              Container(
+                height: 150,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/marketbanner.png'),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              SizedBox(height: 15),
+              ListTile(
+                leading: Icon(Icons.home),
+                title: Text('AMBULANT COLLECTION ',
+                    style: TextStyle(color: Colors.black)),
+                onTap: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (_) => HomeScreen()),
+                  );
+                },
+              ),
+
+              ListTile(
+                leading: Icon(Icons.cloud_download),
+                title: Text('DOWNLOAD DATA',
+                    style: TextStyle(color: Colors.black)),
+                onTap: () {
+                  // TODO: navigate to Download Data Screen
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (_) => DownloadData()),
+                  );
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.cloud_upload),
+                title:
+                    Text('UPLOAD DATA', style: TextStyle(color: Colors.black)),
+                onTap: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (_) => UploadData()),
+                  );
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.build),
+                title: Text('SET UP', style: TextStyle(color: Colors.black)),
+                onTap: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (_) => SetUp()),
+                  );
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.settings),
+                title: Text('SETTINGS', style: TextStyle(color: Colors.black)),
+                onTap: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (_) => SettingsScreen()),
+                  );
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.person),
+                title: Text('PROFILE', style: TextStyle(color: Colors.black)),
+                onTap: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (_) => ProfileScreen()),
+                  );
+                },
+              ),
+              Divider(), // Add a divider before the Logout button
+              ListTile(
+                leading: Icon(Icons.logout),
+                title: Text('LOGOUT', style: TextStyle(color: Colors.black)),
+                onTap: () {
+                  // TODO: log out user and navigate to Login Screen
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (_) => LoginScreen()),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Text(
+                    'AMBULANT COLLECTION',
+                    style:
+                        TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                SizedBox(height: 10),
+                TextField(
+                  keyboardType:
+                      TextInputType.number, // set the keyboard to numeric only
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly
+                  ], // only allow digits
+                  decoration: InputDecoration(
+                    labelText: 'Barcode',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: TextField(
+                        keyboardType: TextInputType
+                            .number, // set the keyboard to numeric only
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
+                        ], // only allow digits
+                        decoration: InputDecoration(
+                          labelText: 'No.',
+                          border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10.0)),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    Expanded(
+                      flex: 1,
+                      child: TextField(
+                        readOnly: true,
+                        decoration: InputDecoration(
+                          labelText: 'Date',
+                          border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10.0)),
+                          ),
+                          suffixIcon: Icon(Icons.calendar_today),
+                        ),
+                        controller:
+                            _dateController, // set the controller for the text field
+                        onTap: () async {
+                          final DateTime? selectedDate = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(1900),
+                            lastDate: DateTime(2100),
+                          );
+                          if (selectedDate != null) {
+                            // update the value of the text field with the selected date
+                            String formattedDate =
+                                DateFormat('MM/dd/yyyy').format(selectedDate);
+                            _dateController.text = formattedDate;
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10),
+                TextField(
+                  decoration: InputDecoration(
+                    labelText: 'Vendor Name',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+
+
+                  // ...
+                Row(
+                  children: [
+                    DataTable(
+                      columns: [
+                        DataColumn(
+                          label: Container(
+                            padding: EdgeInsets.all(10),
+
+                            child: Text(
+                              'Qty',
+                              style: TextStyle(
+                                fontSize: 15,
+                              ),
+                            ),
+                          ),
+                        ),
+                        DataColumn(
+                          label: Container(
+                            padding: EdgeInsets.all(10),
+
+                            child: Text(
+                              'Unit Price',
+                              style: TextStyle(
+                                fontSize: 15,
+                              ),
+                            ),
+                          ),
+                        ),
+                        DataColumn(
+                          label: Container(
+                            padding: EdgeInsets.all(10),
+
+                            child: Text(
+                              'Total',
+                              style: TextStyle(
+                                fontSize: 15,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                      rows: [
+                        DataRow(
+                          cells: [
+                            DataCell(
+                              Container(
+                                height: 100,
+                                child: TextField(
+                                  controller: _qtyController,
+                                  keyboardType: TextInputType.number,
+                                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                  onChanged: (_) => _computeTotal(),
+                                ),
+                              ),
+                            ),
+                            DataCell(
+                              Container(
+                                height: 50,
+                                child: TextField(
+                                  controller: _unitPriceController,
+                                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                                  onChanged: (_) => _computeTotal(),
+                                ),
+                              ),
+                            ),
+                            DataCell(
+                              Container(
+                                height: 80,
+                                child: TextFormField(
+                                  controller: _totalController,
+                                  readOnly: true,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+
+
+
+                // Table(
+                //   border: TableBorder.all(
+                //     borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                //   ),
+                //   columnWidths: {
+                //     0: FlexColumnWidth(2),
+                //     1: FlexColumnWidth(1),
+                //     2: FlexColumnWidth(2),
+                //   },
+                //   children: [
+                //     TableRow(
+                //       children: [
+                //         Padding(
+                //           padding: const EdgeInsets.all(5.0),
+                //           child: Text('QTY.'),
+                //         ),
+                //         Padding(
+                //           padding: const EdgeInsets.all(5.0),
+                //           child: Text('UNIT PRICE'),
+                //         ),
+                //
+                //         Padding(
+                //           padding: const EdgeInsets.all(5.0),
+                //           child: Text('TOTAL'),
+                //         ),
+                //       ],
+                //     ),
+                //
+                //     TableRow(
+                //       children: [
+                //         Padding(
+                //           padding: const EdgeInsets.all(8.0),
+                //           child: TextField(
+                //             keyboardType: TextInputType
+                //                 .number, // set the keyboard to numeric only
+                //             inputFormatters: [
+                //               FilteringTextInputFormatter.digitsOnly
+                //             ], // only allow digits
+                //             decoration: InputDecoration(
+                //               border: null,
+                //             ),
+                //           ),
+                //         ),
+                //         Padding(
+                //           padding: const EdgeInsets.all(8.0),
+                //           child: TextField(
+                //             keyboardType: TextInputType
+                //                 .number, // set the keyboard to numeric only
+                //             inputFormatters: [
+                //               FilteringTextInputFormatter.digitsOnly
+                //             ], // only allow digits
+                //             decoration: InputDecoration(
+                //               border: null,
+                //             ),
+                //           ),
+                //         ),
+                //         Padding(
+                //           padding: const EdgeInsets.all(8.0),
+                //           child: Text(''),
+                //         ),
+                //       ],
+                //     ),
+                //   ],
+                // ),
+
+                // Table(
+                //     // ... your existing code ...
+                //     ),
+                SizedBox(height: 20),
+                Table(
+                  border: TableBorder.all(
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  ),
+                  columnWidths: {
+                    0: FlexColumnWidth(2),
+                    1: FlexColumnWidth(1),
+                    2: FlexColumnWidth(2),
+                  },
+                  children: [
+                    TableRow(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            'Grand Total: ',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                //grandtotal
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    // Add your printing logic here
+                    print('Printing...');
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: Color(0xFF03519D), // Set button color to #03519D
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                    padding:
+                        EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+                    textStyle: TextStyle(fontSize: 20.0),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.print, size: 30.0),
+                      SizedBox(width: 10.0),
+                      Text('Print'),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
