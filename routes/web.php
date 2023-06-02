@@ -24,3 +24,7 @@ Route::get('/user/{id}', function ($id) {
         'email' => $user->email
     ]);
 });
+
+Route::get('/users', function () {
+    return response()->json(DB::table('users')->get());
+});
